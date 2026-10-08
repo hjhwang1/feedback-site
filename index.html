@@ -3,9 +3,693 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>인사말</title>
+    <title>전기와 자기 수업 피드백</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #1f2937;
+        background: #f4f7fb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      main {
+        width: min(100% - 2rem, 48rem);
+        margin: 0 auto;
+        padding: 2rem 0 4rem;
+      }
+
+      section {
+        padding: 2rem;
+        border: 1px solid #dbe3ef;
+        border-radius: 1rem;
+        background: #ffffff;
+        box-shadow: 0 0.5rem 1.5rem rgb(31 41 55 / 8%);
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin-top: 0;
+        color: #172554;
+      }
+
+      p {
+        line-height: 1.7;
+      }
+
+      label {
+        display: block;
+        margin: 1.25rem 0 0.5rem;
+        font-weight: 700;
+      }
+
+      input,
+      textarea,
+      button {
+        box-sizing: border-box;
+        width: 100%;
+        border-radius: 0.5rem;
+        font: inherit;
+      }
+
+      input,
+      textarea {
+        padding: 0.7rem 0.75rem;
+        border: 1px solid #aebbd0;
+      }
+
+      textarea {
+        min-height: 7rem;
+        resize: vertical;
+      }
+
+      input:disabled,
+      textarea:disabled {
+        color: #4b5563;
+        background: #f3f4f6;
+      }
+
+      button {
+        min-height: 2.75rem;
+        margin-top: 1rem;
+        padding: 0.6rem 1rem;
+        border: 0;
+        color: #ffffff;
+        background: #2563eb;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #1d4ed8;
+      }
+
+      button.secondary {
+        color: #1e3a8a;
+        background: #dbeafe;
+      }
+
+      button.secondary:hover {
+        background: #bfdbfe;
+      }
+
+      button.link-button {
+        width: auto;
+        margin: 0;
+        padding: 0.25rem 0;
+        color: #1d4ed8;
+        background: transparent;
+        text-align: left;
+        text-decoration: underline;
+      }
+
+      button:disabled {
+        background: #93c5fd;
+        cursor: not-allowed;
+      }
+
+      [hidden] {
+        display: none;
+      }
+
+      .topbar,
+      .actions,
+      .submission-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .topbar {
+        margin-bottom: 1rem;
+      }
+
+      .topbar button {
+        flex: 0 0 auto;
+        width: auto;
+        margin: 0;
+      }
+
+      .lesson-guide,
+      .feedback-card,
+      .notice {
+        padding: 1rem;
+        border-radius: 0.5rem;
+      }
+
+      .lesson-guide {
+        border-left: 0.3rem solid #2563eb;
+        background: #eff6ff;
+      }
+
+      .feedback-card {
+        margin-top: 1.5rem;
+        border: 1px solid #bbf7d0;
+        background: #f0fdf4;
+      }
+
+      .notice {
+        color: #374151;
+        background: #f3f4f6;
+      }
+
+      .success {
+        color: #166534;
+        font-weight: 700;
+      }
+
+      .submission-list {
+        display: grid;
+        gap: 0.75rem;
+        margin: 1.5rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .submission-row {
+        padding: 1rem;
+        border: 1px solid #dbe3ef;
+        border-radius: 0.5rem;
+      }
+
+      .submission-row .link-button {
+        flex: 1;
+      }
+
+      .status {
+        flex: 0 0 auto;
+        color: #166534;
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .answer {
+        margin: 1rem 0;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background: #f8fafc;
+      }
+
+      .answer h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .answer p {
+        margin: 0;
+        white-space: pre-wrap;
+      }
+
+      .empty-state {
+        margin: 1.5rem 0 0;
+      }
+
+      @media (max-width: 36rem) {
+        section {
+          padding: 1.25rem;
+        }
+
+        .topbar,
+        .submission-row {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .topbar button {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
-    <p>안녕하세요</p>
+    <main>
+      <section id="name-screen" aria-labelledby="name-screen-title">
+        <h1 id="name-screen-title">전기와 자기 수업 피드백</h1>
+        <p>이름을 입력하면 오늘의 수업 안내를 확인할 수 있어요.</p>
+
+        <form id="name-form">
+          <label for="student-name">이름</label>
+          <input id="student-name" name="studentName" type="text" autocomplete="name" required>
+          <button type="submit">수업 안내 보기</button>
+        </form>
+
+        <button id="teacher-entry" class="secondary" type="button">선생님 화면으로 들어가기</button>
+      </section>
+
+      <section id="teacher-password-screen" aria-labelledby="teacher-password-title" hidden>
+        <h2 id="teacher-password-title">선생님 화면 입장</h2>
+        <p>관리자 비밀번호를 입력해야 선생님 화면을 볼 수 있습니다.</p>
+        <form id="teacher-password-form">
+          <label for="teacher-password">관리자 비밀번호</label>
+          <input id="teacher-password" type="password" autocomplete="current-password" required>
+          <button type="submit">확인</button>
+          <p id="teacher-password-error" class="notice" role="alert" hidden>비밀번호가 맞지 않습니다.</p>
+        </form>
+        <button id="teacher-password-cancel" class="secondary" type="button">돌아가기</button>
+      </section>
+
+      <section id="student-screen" aria-labelledby="student-screen-title" hidden>
+        <div class="topbar">
+          <p id="student-greeting"></p>
+          <button id="student-to-teacher" class="secondary" type="button">선생님 화면</button>
+        </div>
+        <h2 id="student-screen-title">오늘의 수업: 전기와 자기</h2>
+        <p class="lesson-guide">오늘은 「전기와 자기」 단원의 핵심 내용을 배웁니다.</p>
+
+        <form id="submission-form">
+          <label for="understood-content">오늘 가장 잘 이해한 내용은 무엇인가요?</label>
+          <textarea id="understood-content" required></textarea>
+
+          <label for="difficult-content">아직 어려운 내용은 무엇인가요?</label>
+          <textarea id="difficult-content" required></textarea>
+
+          <button id="submission-button" type="submit">답변 제출</button>
+          <p id="submission-status" class="success" role="status" hidden></p>
+        </form>
+
+        <div id="student-feedback" class="feedback-card" hidden>
+          <h3>선생님 피드백</h3>
+          <p id="student-feedback-content"></p>
+        </div>
+      </section>
+
+      <section id="teacher-screen" aria-labelledby="teacher-screen-title" hidden>
+        <div class="topbar">
+          <div>
+            <p>선생님 화면</p>
+            <h2 id="teacher-screen-title">학생 제출 현황</h2>
+          </div>
+          <button id="teacher-to-student" class="secondary" type="button">학생 화면</button>
+        </div>
+        <p class="lesson-guide">오늘의 수업: 전기와 자기</p>
+        <div id="submission-list-container"></div>
+      </section>
+
+      <section id="teacher-detail-screen" aria-labelledby="teacher-detail-title" hidden>
+        <div class="topbar">
+          <div>
+            <p>학생 답변 확인</p>
+            <h2 id="teacher-detail-title"></h2>
+          </div>
+          <button id="detail-to-list" class="secondary" type="button">제출 현황</button>
+        </div>
+
+        <div class="answer">
+          <h3>가장 잘 이해한 내용</h3>
+          <p id="detail-understood-content"></p>
+        </div>
+        <div class="answer">
+          <h3>아직 어려운 내용</h3>
+          <p id="detail-difficult-content"></p>
+        </div>
+
+        <form id="feedback-form">
+          <label for="feedback-content">짧은 피드백</label>
+          <textarea id="feedback-content" required></textarea>
+          <button id="publish-feedback-button" type="submit">피드백 공개</button>
+          <p id="feedback-status" class="success" role="status" hidden></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = 'https://ulefeyiudhqdtviitmvu.supabase.co';
+      const SUPABASE_ANON_KEY = 'sb_publishable_vadR-TL9hQ9lamsfGVXDjA_qyU7rQ-i';
+      const hasSupabaseConfig = SUPABASE_URL.startsWith('https://')
+        && !SUPABASE_URL.includes('여기에')
+        && !SUPABASE_ANON_KEY.includes('여기에');
+      const supabaseClient = hasSupabaseConfig
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        : null;
+
+      const lesson = {
+        date: new Date().toISOString().slice(0, 10),
+        title: '전기와 자기',
+        learningGuide: '오늘은 「전기와 자기」 단원의 핵심 내용을 배웁니다.'
+      };
+
+      const screens = {
+        name: document.querySelector('#name-screen'),
+        teacherPassword: document.querySelector('#teacher-password-screen'),
+        student: document.querySelector('#student-screen'),
+        teacher: document.querySelector('#teacher-screen'),
+        detail: document.querySelector('#teacher-detail-screen')
+      };
+      const nameForm = document.querySelector('#name-form');
+      const nameInput = document.querySelector('#student-name');
+      const teacherPasswordForm = document.querySelector('#teacher-password-form');
+      const teacherPasswordInput = document.querySelector('#teacher-password');
+      const teacherPasswordError = document.querySelector('#teacher-password-error');
+      const studentGreeting = document.querySelector('#student-greeting');
+      const submissionForm = document.querySelector('#submission-form');
+      const understoodInput = document.querySelector('#understood-content');
+      const difficultInput = document.querySelector('#difficult-content');
+      const submissionButton = document.querySelector('#submission-button');
+      const submissionStatus = document.querySelector('#submission-status');
+      const studentFeedback = document.querySelector('#student-feedback');
+      const studentFeedbackContent = document.querySelector('#student-feedback-content');
+      const submissionListContainer = document.querySelector('#submission-list-container');
+      const detailTitle = document.querySelector('#teacher-detail-title');
+      const detailUnderstood = document.querySelector('#detail-understood-content');
+      const detailDifficult = document.querySelector('#detail-difficult-content');
+      const feedbackForm = document.querySelector('#feedback-form');
+      const feedbackInput = document.querySelector('#feedback-content');
+      const feedbackStatus = document.querySelector('#feedback-status');
+
+      let state = { lesson, submissions: [] };
+      let currentStudentName = '';
+      let selectedSubmissionKey = '';
+      let teacherUnlocked = false;
+      const TEACHER_PASSWORD = 'teacher-demo';
+
+      async function loadState() {
+        if (!supabaseClient) {
+          console.warn('Supabase URL과 공개 키를 입력하면 저장 기능이 활성화됩니다.');
+          return { lesson, submissions: [] };
+        }
+
+        const { data: lessonRow, error: lessonError } = await supabaseClient
+          .from('lessons')
+          .select('lesson_date, title, learning_guide')
+          .eq('lesson_date', lesson.date)
+          .maybeSingle();
+
+        if (lessonError) throw lessonError;
+
+        if (!lessonRow) {
+          const { error: lessonInsertError } = await supabaseClient
+            .from('lessons')
+            .insert({
+              lesson_date: lesson.date,
+              title: lesson.title,
+              learning_guide: lesson.learningGuide
+            });
+
+          if (lessonInsertError) throw lessonInsertError;
+        }
+
+        const { data: submissionRows, error: submissionsError } = await supabaseClient
+          .from('student_submissions')
+          .select('lesson_date, student_name, understood_content, difficult_content, submitted, feedback_content, feedback_public')
+          .eq('lesson_date', lesson.date)
+          .order('student_name');
+
+        if (submissionsError) throw submissionsError;
+
+        return {
+          lesson: lessonRow ? {
+            date: lessonRow.lesson_date,
+            title: lessonRow.title,
+            learningGuide: lessonRow.learning_guide
+          } : lesson,
+          submissions: (submissionRows || []).map((row) => ({
+            lessonDate: row.lesson_date,
+            studentName: row.student_name,
+            understoodContent: row.understood_content,
+            difficultContent: row.difficult_content,
+            submitted: row.submitted,
+            feedbackContent: row.feedback_content || '',
+            feedbackPublic: row.feedback_public
+          }))
+        };
+      }
+
+      async function saveSubmission(submission) {
+        if (!supabaseClient) {
+          throw new Error('Supabase URL과 공개 키를 입력하세요.');
+        }
+
+        const { error } = await supabaseClient
+          .from('student_submissions')
+          .upsert({
+            lesson_date: submission.lessonDate,
+            student_name: submission.studentName,
+            understood_content: submission.understoodContent,
+            difficult_content: submission.difficultContent,
+            submitted: submission.submitted,
+            feedback_content: submission.feedbackContent || null,
+            feedback_public: submission.feedbackPublic
+          }, { onConflict: 'lesson_date,student_name' });
+
+        if (error) throw error;
+      }
+
+      function submissionKey(submission) {
+        return `${submission.lessonDate}::${submission.studentName}`;
+      }
+
+      function findSubmission(studentName) {
+        return state.submissions.find((submission) => (
+          submission.lessonDate === state.lesson.date &&
+          submission.studentName === studentName
+        ));
+      }
+
+      function showScreen(screenName) {
+        Object.values(screens).forEach((screen) => {
+          screen.hidden = true;
+        });
+        screens[screenName].hidden = false;
+      }
+
+      function showTeacherPassword() {
+        teacherPasswordInput.value = '';
+        teacherPasswordError.hidden = true;
+        showScreen('teacherPassword');
+        teacherPasswordInput.focus();
+      }
+
+      function renderStudent(studentName) {
+        currentStudentName = studentName;
+        studentGreeting.textContent = `${studentName} 학생, 오늘의 수업 안내입니다.`;
+        document.querySelector('#student-screen-title').textContent = `오늘의 수업: ${state.lesson.title}`;
+        document.querySelector('.lesson-guide').textContent = state.lesson.learningGuide;
+
+        const submission = findSubmission(studentName);
+        const hasSubmission = Boolean(submission && submission.submitted);
+        understoodInput.value = hasSubmission ? submission.understoodContent : '';
+        difficultInput.value = hasSubmission ? submission.difficultContent : '';
+        understoodInput.disabled = hasSubmission;
+        difficultInput.disabled = hasSubmission;
+        submissionButton.hidden = hasSubmission;
+        submissionStatus.hidden = !hasSubmission;
+        submissionStatus.textContent = hasSubmission ? '답변이 제출되었습니다.' : '';
+
+        if (submission && submission.feedbackPublic) {
+          studentFeedback.hidden = false;
+          studentFeedbackContent.textContent = submission.feedbackContent;
+        } else {
+          studentFeedback.hidden = true;
+          studentFeedbackContent.textContent = '';
+        }
+
+        showScreen('student');
+      }
+
+      function renderTeacherList() {
+        if (!teacherUnlocked) {
+          showTeacherPassword();
+          return;
+        }
+
+        submissionListContainer.replaceChildren();
+
+        if (state.submissions.length === 0) {
+          const emptyState = document.createElement('p');
+          emptyState.className = 'notice empty-state';
+          emptyState.textContent = '아직 제출한 학생이 없습니다.';
+          submissionListContainer.append(emptyState);
+          return;
+        }
+
+        const heading = document.createElement('p');
+        heading.textContent = `제출한 학생 ${state.submissions.length}명`;
+        submissionListContainer.append(heading);
+
+        const list = document.createElement('ul');
+        list.className = 'submission-list';
+
+        state.submissions.forEach((submission) => {
+          const item = document.createElement('li');
+          item.className = 'submission-row';
+
+          const button = document.createElement('button');
+          button.className = 'link-button';
+          button.type = 'button';
+          button.textContent = submission.studentName;
+          button.addEventListener('click', () => renderTeacherDetail(submissionKey(submission)));
+
+          const status = document.createElement('span');
+          status.className = 'status';
+          status.textContent = submission.feedbackPublic ? '피드백 공개' : '제출 완료';
+
+          item.append(button, status);
+          list.append(item);
+        });
+
+        submissionListContainer.append(list);
+      }
+
+      function renderTeacherDetail(key) {
+        if (!teacherUnlocked) {
+          showTeacherPassword();
+          return;
+        }
+
+        const submission = state.submissions.find((item) => submissionKey(item) === key);
+        if (!submission) {
+          renderTeacherList();
+          showScreen('teacher');
+          return;
+        }
+
+        selectedSubmissionKey = key;
+        detailTitle.textContent = submission.studentName;
+        detailUnderstood.textContent = submission.understoodContent;
+        detailDifficult.textContent = submission.difficultContent;
+        feedbackInput.value = submission.feedbackContent || '';
+        feedbackStatus.hidden = true;
+        feedbackStatus.textContent = '';
+        showScreen('detail');
+      }
+
+      nameForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const studentName = nameInput.value.trim();
+        if (studentName) {
+          renderStudent(studentName);
+        }
+      });
+
+      submissionForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const understoodContent = understoodInput.value.trim();
+        const difficultContent = difficultInput.value.trim();
+        if (!understoodContent || !difficultContent) {
+          return;
+        }
+
+        const existingSubmission = findSubmission(currentStudentName);
+        if (existingSubmission) {
+          return;
+        }
+
+        const newSubmission = {
+          lessonDate: state.lesson.date,
+          studentName: currentStudentName,
+          understoodContent,
+          difficultContent,
+          submitted: true,
+          feedbackContent: '',
+          feedbackPublic: false
+        };
+
+        submissionButton.disabled = true;
+        try {
+          await saveSubmission(newSubmission);
+          state.submissions.push(newSubmission);
+        } catch (error) {
+          console.error('답변 저장 실패:', error);
+          submissionButton.disabled = false;
+          return;
+        }
+
+        renderStudent(currentStudentName);
+      });
+
+      feedbackForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const feedbackContent = feedbackInput.value.trim();
+        if (!feedbackContent) {
+          return;
+        }
+
+        const submission = state.submissions.find((item) => submissionKey(item) === selectedSubmissionKey);
+        if (!submission) {
+          return;
+        }
+
+        const updatedSubmission = {
+          ...submission,
+          feedbackContent,
+          feedbackPublic: true
+        };
+
+        try {
+          await saveSubmission(updatedSubmission);
+          Object.assign(submission, updatedSubmission);
+        } catch (error) {
+          console.error('피드백 저장 실패:', error);
+          return;
+        }
+
+        feedbackStatus.hidden = false;
+        feedbackStatus.textContent = '피드백이 공개되었습니다.';
+        renderTeacherList();
+      });
+
+      document.querySelector('#teacher-entry').addEventListener('click', () => {
+        showTeacherPassword();
+      });
+
+      document.querySelector('#student-to-teacher').addEventListener('click', () => {
+        showTeacherPassword();
+      });
+
+      teacherPasswordForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (teacherPasswordInput.value === TEACHER_PASSWORD) {
+          teacherUnlocked = true;
+          teacherPasswordError.hidden = true;
+          renderTeacherList();
+          showScreen('teacher');
+          return;
+        }
+
+        teacherPasswordError.hidden = false;
+        teacherPasswordInput.select();
+      });
+
+      document.querySelector('#teacher-password-cancel').addEventListener('click', () => {
+        if (currentStudentName) {
+          renderStudent(currentStudentName);
+        } else {
+          showScreen('name');
+        }
+      });
+
+      document.querySelector('#teacher-to-student').addEventListener('click', () => {
+        if (currentStudentName) {
+          renderStudent(currentStudentName);
+        } else {
+          showScreen('name');
+        }
+      });
+
+      document.querySelector('#detail-to-list').addEventListener('click', () => {
+        renderTeacherList();
+        showScreen('teacher');
+      });
+
+      async function initialize() {
+        try {
+          state = await loadState();
+        } catch (error) {
+          console.error('Supabase 데이터 읽기 실패:', error);
+        }
+      }
+
+      initialize();
+    </script>
   </body>
 </html>
